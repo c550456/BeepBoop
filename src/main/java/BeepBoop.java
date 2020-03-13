@@ -105,7 +105,10 @@ public class BeepBoop
 		for(String line : lines)
 		{
 			if(line.contains("BotToken:"))
+			{
 				MYTOKEN = line.split("BotToken:\\s*")[1];
+				break;
+			}
 		}
 		CommandClientBuilder client = new CommandClientBuilder();
 		waiter = new EventWaiter();
@@ -133,11 +136,9 @@ public class BeepBoop
 					new Couples(),
 					new Spouse(),
 					new Launch(),
-					new Luna(),
 					new Waiting(),
 					new Stab(),
 					new Pat(),
-					new Civ5(),
 					new Nickname(),
 					new EightBall(),
 					new Stats(),

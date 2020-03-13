@@ -43,6 +43,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class UsefulMethods 
 {
+	/*
+	 * Storing the unicode of various emoji for later use everywhere
+	 * TODO: store these in database instead?
+	 */
 	final static String gun = EmojiManager.getForAlias("gun").getUnicode();
 	final static String boom = EmojiManager.getForAlias("boom").getUnicode();
 	final static String wavyDash = EmojiManager.getForAlias("wavy_dash").getUnicode();
@@ -65,11 +69,23 @@ public class UsefulMethods
 		event.getTextChannel().sendFile(file).queue();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T getSingleValueFromSQL(String query, String database) throws SQLException
+	{
+		T value = null;
+		ResultSet result = runSQLQuery(query,database);
+		if(result.next() && result.getObject(1) != null)
+		{
+			value = (T) result.getObject(1);
+		}
+		return value;
+	}
+	
 	public static ResultSet runSQLQuery(String query, String database) throws SQLException
 	{
 		if(database == null)
 		{
-			database = "292494629872467969"; //My testing database
+			database = BeepBoop.MYSERVERID; //My testing database
 		}
 		BeepBoop.logger.debug("\nDatabase: " + database + "\nSQL: " + query);
 		try {
@@ -95,7 +111,7 @@ public class UsefulMethods
 	{
 		if(database == null)
 		{
-			database = "292494629872467969"; //My testing database
+			database = BeepBoop.MYSERVERID; //My testing database
 		}
 		BeepBoop.logger.debug("\nDatabase: " + database + "\nSQL: " + query);
 		try {

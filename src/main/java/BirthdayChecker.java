@@ -66,10 +66,11 @@ public class BirthdayChecker
 					birthdayChannelId = results.getString("BirthdayChannelId");
 					birthdayRoleId = results.getString("BirthdayRoleId");
 				}
-				results = UsefulMethods.runSQLQuery("SELECT dbo.GetTodayBirthdays() as 'Users'", currentDb);
-				if(results.next() && results.getString("Users") != null) 
+				String result = UsefulMethods.getSingleValueFromSQL("SELECT dbo.GetTodayBirthdays()", currentDb);
+				if(result != null)
 				{
-					users = Arrays.asList(results.getString("Users").split(","));
+					BeepBoop.logger.debug("RESULT:" + result);
+					users = Arrays.asList(result.split(","));
 				}
 
 				//Assign birthday role, if possible
@@ -161,12 +162,12 @@ public class BirthdayChecker
 		{
 			for(Member m : members)
 			{
-				ResultSet results = UsefulMethods.runSQLQuery("SELECT dbo.IsUserBirthdayAYearAway('"+ m.getUser().getId() +"')", guild.getId());
-				if(results != null && results.next() && results.getBoolean(1))
+				boolean shouldHaveRole = UsefulMethods.getSingleValueFromSQL("SELECT dbo.IsUserBirthdayAYearAway('"+ m.getUser().getId() +"')", guild.getId());
+				if(shouldHaveRole)
 				{
 					ids.add(m.getUser().getId());
 				}
-				//If the user is NOT in the list of users who should be getting the role OR who already SHOULD have it
+				//If the user is NOT in the list of users who: should be getting the role OR correctly already have it
 				if(!ids.contains(m.getUser().getId())) 
 				{
 					guild.removeRoleFromMember(m, bdayRole).queue(s -> {}, 

@@ -1,4 +1,3 @@
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
@@ -160,14 +159,17 @@ public class Birthday extends Command
 		DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd").withLocale(Locale.US).withZoneUTC();
 		DateTime dt = new DateTime().withZone(DateTimeZone.UTC);
 
-		ResultSet results = null;
+//		ResultSet results = null;
 		try {
-			results = UsefulMethods.runSQLQuery("SELECT dbo.GetBirthdayByUserId('"+member.getUser().getId()+"')",database);
-			if(results.next() && results.getString(1) != null)
-			{
-				dt = dtf.parseDateTime(results.getString(1)).withYear(DateTime.now().getYear()).withZone(DateTimeZone.UTC);
-				birthday = member.getAsMention() + "'s birthday is " + getDay(dt.withZone(DateTimeZone.UTC));
-			}
+//			results = UsefulMethods.runSQLQuery("SELECT dbo.GetBirthdayByUserId('"+member.getUser().getId()+"')",database);
+//			if(results.next() && results.getString(1) != null)
+//			{
+//				dt = dtf.parseDateTime(results.getString(1)).withYear(DateTime.now().getYear()).withZone(DateTimeZone.UTC);
+//				birthday = member.getAsMention() + "'s birthday is " + getDay(dt.withZone(DateTimeZone.UTC));
+//			}
+			String result = UsefulMethods.getSingleValueFromSQL("SELECT dbo.GetBirthdayByUserId('"+member.getUser().getId()+"')",database);
+			dt = dtf.parseDateTime(result).withZone(DateTimeZone.UTC);
+			birthday = member.getAsMention() + "'s birthday is " + getDay(dt.withZone(DateTimeZone.UTC));
 		} catch (SQLException e) {
 			BeepBoop.logger.error(e.getMessage());
 		}
